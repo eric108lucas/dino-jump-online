@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dino Jump</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="hud">
+            <span id="level-display">Level: 1</span>
+            <span id="score-display">Score: 0</span>
+            <span id="p1-score-display" class="hidden">P1: 0</span>
+            <span id="time-display">Time: 1:00</span>
+            <span id="p2-score-display" class="hidden">P2: 0</span>
+            <span id="room-display" class="hidden">Room: ----</span>
+            <button id="ranking-btn">Ranking</button>
+        </div>
+        <canvas id="game-canvas" width="800" height="300"></canvas>
+        <div id="overlay">
+            <!-- Main Menu -->
+            <div id="start-screen" class="screen">
+                <h1>DINO JUMP</h1>
+                <div class="mode-buttons">
+                    <button id="online-btn" class="mode-btn online-btn">PLAY ONLINE</button>
+                    <button id="offline-btn" class="mode-btn">PLAY OFFLINE</button>
+                </div>
+                <p class="hint">Jump over the cacti to survive!</p>
+            </div>
+
+            <!-- Offline Mode Selection -->
+            <div id="offline-screen" class="screen hidden">
+                <h1>OFFLINE MODE</h1>
+                <div class="mode-buttons">
+                    <button id="single-player-btn" class="mode-btn">1 PLAYER</button>
+                    <button id="two-player-btn" class="mode-btn">2 PLAYERS</button>
+                </div>
+                <p class="hint">Press 1 or 2 to select mode</p>
+                <button id="offline-back-btn" class="back-btn">Back</button>
+            </div>
+
+            <!-- Online Menu -->
+            <div id="online-menu-screen" class="screen hidden">
+                <h1>ONLINE MODE</h1>
+                <div class="online-options">
+                    <div class="name-input-group">
+                        <label for="player-name">Your Name:</label>
+                        <input type="text" id="player-name" maxlength="12" placeholder="Player">
+                    </div>
+                    <button id="create-room-btn" class="mode-btn">CREATE ROOM</button>
+                    <div class="join-section">
+                        <p>OR JOIN EXISTING ROOM:</p>
+                        <div class="join-input-group">
+                            <input type="text" id="room-code-input" maxlength="6" placeholder="CODE">
+                            <button id="join-room-btn" class="mode-btn join-btn">JOIN</button>
+                        </div>
+                    </div>
+                </div>
+                <button id="online-back-btn" class="back-btn">Back</button>
+            </div>
+
+            <!-- Connecting Screen -->
+            <div id="connecting-screen" class="screen hidden">
+                <h1>CONNECTING...</h1>
+                <p>Please wait</p>
+            </div>
+
+            <!-- Lobby Screen -->
+            <div id="lobby-screen" class="screen hidden">
+                <h1>LOBBY</h1>
+                <div class="room-info">
+                    <span id="lobby-room-code">Room: ABC123</span>
+                    <button id="copy-link-btn" class="copy-btn">Copy Link</button>
+                </div>
+                <div class="lobby-players" id="lobby-players">
+                    <!-- Player list will be populated dynamically -->
+                </div>
+                <div class="lobby-controls host-only">
+                    <label>Difficulty:</label>
+                    <div class="difficulty-buttons" id="difficulty-buttons">
+                        <button class="diff-btn active" data-level="1">1</button>
+                        <button class="diff-btn" data-level="2">2</button>
+                        <button class="diff-btn" data-level="3">3</button>
+                        <button class="diff-btn" data-level="4">4</button>
+                        <button class="diff-btn" data-level="5">5</button>
+                    </div>
+                </div>
+                <div class="lobby-actions">
+                    <button id="ready-btn" class="mode-btn ready-btn">READY</button>
+                    <button id="start-game-btn" class="mode-btn start-btn host-only hidden">START GAME</button>
+                </div>
+                <p id="lobby-status" class="hint">Waiting for players...</p>
+                <button id="leave-room-btn" class="back-btn">Leave Room</button>
+            </div>
+
+            <!-- Game Over (Single Player) -->
+            <div id="gameover-screen" class="screen hidden">
+                <h1>GAME OVER</h1>
+                <p id="gameover-score">Score: 0</p>
+                <p>Press SPACE or click to restart</p>
+            </div>
+
+            <!-- Game Over (Two Player Local) -->
+            <div id="twoplayer-gameover-screen" class="screen hidden">
+                <h1 id="winner-text">GAME OVER</h1>
+                <div class="score-comparison">
+                    <div class="player-result p1-result">
+                        <span class="player-label">Player 1</span>
+                        <span id="p1-final-score" class="final-score">0</span>
+                    </div>
+                    <div class="vs-divider">VS</div>
+                    <div class="player-result p2-result">
+                        <span class="player-label">Player 2</span>
+                        <span id="p2-final-score" class="final-score">0</span>
+                    </div>
+                </div>
+                <p>Press SPACE or click to play again</p>
+            </div>
+
+            <!-- Online Game Over -->
+            <div id="online-gameover-screen" class="screen hidden">
+                <h1>GAME OVER</h1>
+                <div id="online-rankings" class="online-rankings">
+                    <!-- Rankings will be populated dynamically -->
+                </div>
+                <div class="online-gameover-actions">
+                    <button id="restart-online-btn" class="mode-btn host-only">PLAY AGAIN</button>
+                    <button id="return-lobby-btn" class="back-btn">Return to Lobby</button>
+                </div>
+            </div>
+
+            <!-- Disconnected Screen -->
+            <div id="disconnected-screen" class="screen hidden">
+                <h1>DISCONNECTED</h1>
+                <p>Lost connection to server</p>
+                <button id="reconnect-btn" class="mode-btn">RETURN TO MENU</button>
+            </div>
+
+            <!-- Level Complete (Single Player) -->
+            <div id="levelcomplete-screen" class="screen hidden">
+                <h1>LEVEL COMPLETE!</h1>
+                <p id="level-complete-msg">Level 1 cleared!</p>
+                <p id="level-score">Score: 0</p>
+                <p>Press SPACE or click for next level</p>
+            </div>
+
+            <!-- Ranking Screen -->
+            <div id="ranking-screen" class="screen hidden">
+                <h1>RANKING</h1>
+                <table id="ranking-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Score</th>
+                            <th>Level</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ranking-body">
+                    </tbody>
+                </table>
+                <button id="ranking-close-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/sound.js"></script>
+    <script src="js/ground.js"></script>
+    <script src="js/dino.js"></script>
+    <script src="js/cactus.js"></script>
+    <script src="js/ranking.js"></script>
+    <script src="js/online.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
