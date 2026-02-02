@@ -661,3 +661,271 @@ body {
     border-radius: 3px;
     background-color: rgba(255, 255, 255, 0.8);
 }
+
+/* ===========================================
+   MOBILE RESPONSIVE STYLES
+   =========================================== */
+
+/* Mobile container */
+@media (max-width: 850px) {
+    body {
+        padding: 0;
+        align-items: flex-start;
+    }
+
+    #game-container {
+        width: 100vw;
+        max-width: 100%;
+        border: none;
+        border-radius: 0;
+    }
+
+    #game-canvas {
+        width: 100%;
+        height: auto;
+    }
+
+    #overlay {
+        width: 100%;
+        left: 0;
+        right: 0;
+    }
+
+    #hud {
+        padding: 8px 10px;
+        font-size: 12px;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    #hud span {
+        min-width: auto;
+        flex: 1;
+        text-align: center;
+    }
+
+    #ranking-btn {
+        padding: 4px 10px;
+        font-size: 11px;
+    }
+
+    /* Screen modals */
+    .screen {
+        padding: 20px 15px;
+        margin: 10px;
+        max-width: calc(100% - 20px);
+    }
+
+    .screen h1 {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    .screen p {
+        font-size: 14px;
+    }
+
+    /* Mode buttons stack vertically on mobile */
+    .mode-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .mode-btn {
+        padding: 12px 20px;
+        font-size: 16px;
+        width: 100%;
+    }
+
+    /* Online menu */
+    .name-input-group {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .name-input-group input {
+        width: 100%;
+    }
+
+    .join-input-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #room-code-input {
+        width: 100%;
+    }
+
+    .join-btn {
+        width: 100%;
+    }
+
+    /* Lobby */
+    .room-info {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    #lobby-room-code {
+        font-size: 16px;
+    }
+
+    .lobby-player {
+        padding: 8px 10px;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .player-info {
+        flex: 1;
+        min-width: 60%;
+    }
+
+    .lobby-controls {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .lobby-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .lobby-actions .mode-btn {
+        width: 100%;
+    }
+
+    /* Score comparison */
+    .score-comparison {
+        gap: 10px;
+    }
+
+    .player-result {
+        padding: 10px 15px;
+        min-width: 80px;
+    }
+
+    .final-score {
+        font-size: 22px;
+    }
+
+    .vs-divider {
+        font-size: 18px;
+    }
+
+    /* Online rankings */
+    .online-rank-item {
+        padding: 8px 12px;
+    }
+
+    .rank-position {
+        font-size: 16px;
+        width: 30px;
+    }
+
+    .rank-score {
+        font-size: 14px;
+    }
+
+    .online-gameover-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .online-gameover-actions .mode-btn,
+    .online-gameover-actions .back-btn {
+        width: 100%;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 400px) {
+    #hud {
+        font-size: 10px;
+        padding: 6px 8px;
+    }
+
+    .screen h1 {
+        font-size: 20px;
+    }
+
+    .mode-btn {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    .diff-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
+}
+
+/* Tap area for mobile gameplay */
+#mobile-tap-area {
+    display: none;
+}
+
+@media (max-width: 850px) {
+    #mobile-tap-area {
+        display: block;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 80px;
+        background: linear-gradient(transparent, rgba(83, 83, 83, 0.9));
+        z-index: 100;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #mobile-tap-area.hidden {
+        display: none;
+    }
+
+    .tap-hint {
+        color: #fff;
+        font-family: 'Courier New', monospace;
+        font-size: 16px;
+        font-weight: bold;
+        text-transform: uppercase;
+        animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 0.7; }
+        50% { opacity: 1; }
+    }
+}
+
+/* Landscape mobile optimization */
+@media (max-height: 500px) and (orientation: landscape) {
+    #hud {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+
+    .screen {
+        padding: 15px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .screen h1 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .mode-buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .mode-btn {
+        flex: 1;
+        min-width: 120px;
+    }
+}

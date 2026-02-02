@@ -5,6 +5,10 @@ class Game {
         this.ctx = this.canvas.getContext('2d');
         this.ctx.imageSmoothingEnabled = false;
 
+        // Mobile detection
+        this.isMobile = window.innerWidth <= 850 || 'ontouchstart' in window;
+        this.mobileTapArea = document.getElementById('mobile-tap-area');
+
         // Game mode: 'single', 'two-player', or 'online'
         this.gameMode = null;
 
@@ -82,10 +86,44 @@ class Game {
 
         this.bindEvents();
         this.checkRoomUrl();
+        this.setupMobile();
 
         // Start game loop
         this.gameLoop = this.gameLoop.bind(this);
         requestAnimationFrame(this.gameLoop);
+    }
+
+    setupMobile() {
+        // Update mobile detection on resize
+        window.addEventListener('resize', () => {
+            this.isMobile = window.innerWidth <= 850 || 'ontouchstart' in window;
+            this.updateOverlaySize();
+        });
+
+        // Initial overlay size update
+        this.updateOverlaySize();
+    }
+
+    updateOverlaySize() {
+        const overlay = document.getElementById('overlay');
+        if (this.isMobile) {
+            // Get the actual rendered height of the canvas
+            const canvasRect = this.canvas.getBoundingClientRect();
+            overlay.style.height = canvasRect.height + 'px';
+            overlay.style.top = document.getElementById('hud').offsetHeight + 'px';
+        }
+    }
+
+    showMobileTapArea() {
+        if (this.isMobile && this.mobileTapArea) {
+            this.mobileTapArea.classList.remove('hidden');
+        }
+    }
+
+    hideMobileTapArea() {
+        if (this.mobileTapArea) {
+            this.mobileTapArea.classList.add('hidden');
+        }
     }
 
     checkRoomUrl() {
@@ -127,6 +165,15 @@ class Game {
             e.preventDefault();
             this.handleInput('touch');
         });
+
+        // Mobile tap area
+        if (this.mobileTapArea) {
+            this.mobileTapArea.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                this.handleInput('touch');
+            });
+            this.mobileTapArea.addEventListener('click', () => this.handleInput('click'));
+        }
 
         // Main menu buttons
         document.getElementById('online-btn').addEventListener('click', (e) => {
@@ -289,7 +336,11 @@ class Game {
             window.history.pushState({}, '', '/');
         }
 
+        this.hideMobileTapArea();
         this.showScreen('start');
+
+        // Update overlay size
+        setTimeout(() => this.updateOverlaySize(), 50);
     }
 
     async createRoom() {
@@ -473,6 +524,10 @@ class Game {
         this.multiGround = new MultiLaneGround(this.canvas, this.ctx, laneConfigs);
 
         this.hideAllScreens();
+        this.showMobileTapArea();
+
+        // Update overlay size for mobile
+        setTimeout(() => this.updateOverlaySize(), 50);
     }
 
     updateOnlineGameState(state) {
@@ -527,11 +582,13 @@ class Game {
             gameoverScreen.classList.add('not-host');
         }
 
+        this.hideMobileTapArea();
         this.showScreen('onlineGameover');
     }
 
     showDisconnectedScreen() {
         this.state = 'disconnected';
+        this.hideMobileTapArea();
         this.showScreen('disconnected');
     }
 
@@ -657,6 +714,10 @@ class Game {
         this.elapsedTime = 0;
         this.lastTimestamp = performance.now();
         this.hideAllScreens();
+        this.showMobileTapArea();
+
+        // Update overlay size after canvas height might have changed
+        setTimeout(() => this.updateOverlaySize(), 50);
     }
 
     returnToStart() {
@@ -675,7 +736,11 @@ class Game {
         this.displays.room.classList.add('hidden');
         document.getElementById('ranking-btn').classList.remove('hidden');
 
+        this.hideMobileTapArea();
         this.showScreen('start');
+
+        // Update overlay size
+        setTimeout(() => this.updateOverlaySize(), 50);
     }
 
     resetGame() {
@@ -937,6 +1002,7 @@ class Game {
         rankingSystem.addScore(this.score, this.level, false);
 
         this.displays.gameoverScore.textContent = `Score: ${this.score}`;
+        this.hideMobileTapArea();
         this.showScreen('gameover');
     }
 
@@ -968,6 +1034,7 @@ class Game {
         this.displays.p1FinalScore.textContent = this.scores[0];
         this.displays.p2FinalScore.textContent = this.scores[1];
 
+        this.hideMobileTapArea();
         this.showScreen('twoplayerGameover');
     }
 
@@ -980,6 +1047,7 @@ class Game {
 
         this.displays.levelCompleteMsg.textContent = `Level ${this.level} cleared!`;
         this.displays.levelScore.textContent = `Score: ${this.score}`;
+        this.hideMobileTapArea();
         this.showScreen('levelcomplete');
     }
 
