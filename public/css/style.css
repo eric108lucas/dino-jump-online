@@ -201,11 +201,30 @@ body {
 }
 
 /* Online menu styles */
+#online-menu-screen {
+    padding: 15px 30px;
+}
+
+#online-menu-screen h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+#online-menu-screen .back-btn {
+    margin-top: 8px;
+    padding: 6px 16px;
+}
+
+#online-menu-screen .mode-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+}
+
 .online-options {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin: 20px 0;
+    gap: 10px;
+    margin: 10px 0;
 }
 
 .name-input-group {
@@ -221,8 +240,8 @@ body {
 
 .name-input-group input,
 #room-code-input {
-    padding: 10px 15px;
-    font-size: 16px;
+    padding: 8px 12px;
+    font-size: 14px;
     font-family: 'Courier New', monospace;
     border: 2px solid #535353;
     border-radius: 4px;
@@ -240,14 +259,15 @@ body {
 }
 
 .join-section {
-    margin-top: 10px;
-    padding-top: 15px;
+    margin-top: 5px;
+    padding-top: 10px;
     border-top: 2px dashed #ddd;
 }
 
 .join-section p {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     color: #666;
+    font-size: 12px;
 }
 
 .join-input-group {
@@ -668,27 +688,30 @@ body {
 
 /* Mobile container */
 @media (max-width: 850px) {
-    body {
+    html, body {
+        margin: 0;
         padding: 0;
-        align-items: flex-start;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    body {
+        display: block;
     }
 
     #game-container {
-        width: 100vw;
-        max-width: 100%;
-        border: none;
-        border-radius: 0;
-    }
-
-    #game-canvas {
-        width: 100%;
-        height: auto;
-    }
-
-    #overlay {
-        width: 100%;
+        position: fixed;
+        top: 0;
         left: 0;
         right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 0;
+        display: flex;
+        flex-direction: column;
     }
 
     #hud {
@@ -696,6 +719,7 @@ body {
         font-size: 12px;
         flex-wrap: wrap;
         gap: 5px;
+        flex-shrink: 0;
     }
 
     #hud span {
@@ -709,16 +733,37 @@ body {
         font-size: 11px;
     }
 
+    #game-canvas {
+        width: 100%;
+        height: auto;
+        flex-shrink: 0;
+    }
+
+    #overlay {
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: auto;
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        align-items: flex-start;
+        padding: 10px 0;
+    }
+
     /* Screen modals */
     .screen {
-        padding: 20px 15px;
+        padding: 15px;
         margin: 10px;
         max-width: calc(100% - 20px);
+        max-height: calc(100% - 20px);
+        overflow-y: auto;
     }
 
     .screen h1 {
-        font-size: 24px;
-        margin-bottom: 15px;
+        font-size: 22px;
+        margin-bottom: 10px;
     }
 
     .screen p {
