@@ -19,7 +19,29 @@ app.get('/room/:roomId', (req, res) => {
 const rooms = new Map();
 
 // Player colors
-const PLAYER_COLORS = ['#2196F3', '#FF9800', '#4CAF50', '#9C27B0', '#F44336'];
+// 20 distinct player colors
+const PLAYER_COLORS = [
+    '#2196F3', // Blue
+    '#FF9800', // Orange
+    '#4CAF50', // Green
+    '#9C27B0', // Purple
+    '#F44336', // Red
+    '#00BCD4', // Cyan
+    '#E91E63', // Pink
+    '#CDDC39', // Lime
+    '#795548', // Brown
+    '#607D8B', // Blue Grey
+    '#FF5722', // Deep Orange
+    '#3F51B5', // Indigo
+    '#009688', // Teal
+    '#FFC107', // Amber
+    '#673AB7', // Deep Purple
+    '#8BC34A', // Light Green
+    '#03A9F4', // Light Blue
+    '#FFEB3B', // Yellow
+    '#FF4081', // Pink Accent
+    '#00E676'  // Green Accent
+];
 
 // Level configurations
 const LEVEL_CONFIG = {
@@ -97,9 +119,11 @@ function createRoom(hostId, hostName, hostWs) {
 }
 
 // Calculate lane positions based on player count
+// Lane height of 160px accommodates jump height (~140px)
+// Start Y of 160 gives room for first player to jump without going off-canvas
 function calculateLanePositions(playerCount) {
-    const laneHeight = 120;
-    const startY = 80;
+    const laneHeight = 160;
+    const startY = 160;
     const positions = [];
     for (let i = 0; i < playerCount; i++) {
         positions.push(startY + (i * laneHeight));
@@ -421,8 +445,8 @@ wss.on('connection', (ws) => {
                     sendToPlayer({ ws }, { type: 'error', message: 'Game already in progress' });
                     return;
                 }
-                if (room.players.size >= 5) {
-                    sendToPlayer({ ws }, { type: 'error', message: 'Room is full' });
+                if (room.players.size >= 20) {
+                    sendToPlayer({ ws }, { type: 'error', message: 'Room is full (max 20 players)' });
                     return;
                 }
 

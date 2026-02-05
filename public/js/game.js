@@ -497,7 +497,8 @@ class Game {
         this.onlineElapsedTime = 0;
 
         // Calculate canvas height based on player count
-        const canvasHeight = 80 + (players.length * 120);
+        // Lane height 160px, start Y 160px to accommodate jump height
+        const canvasHeight = 160 + (players.length * 160);
         this.canvas.height = canvasHeight;
 
         // Update overlay height
@@ -517,7 +518,7 @@ class Game {
 
         // Create ground for online mode
         const laneConfigs = players.map((p, i) => ({
-            groundY: 80 + (i * 120),
+            groundY: 160 + (i * 160),
             color: p.color,
             playerId: p.id
         }));
@@ -916,7 +917,7 @@ class Game {
         for (const cactus of this.onlineCacti) {
             // Draw cactus for each lane
             for (let i = 0; i < this.onlinePlayers.length; i++) {
-                const groundY = 80 + (i * 120);
+                const groundY = 160 + (i * 160);
                 const y = groundY - cactus.height;
 
                 // Draw cactus based on type
@@ -933,38 +934,130 @@ class Game {
     }
 
     drawOnlinePlayers() {
-        const DINO_WIDTH = 44;
-        const DINO_HEIGHT = 47;
-
         for (const player of this.onlinePlayers) {
             const x = 50;
             const y = player.y;
+            const color = player.isAlive ? player.color : '#999999';
 
-            // Draw dino body
-            this.ctx.fillStyle = player.color;
-            this.ctx.fillRect(x, y, DINO_WIDTH, DINO_HEIGHT);
-
-            // Draw eye
-            this.ctx.fillStyle = '#fff';
-            this.ctx.fillRect(x + 30, y + 8, 8, 8);
-            this.ctx.fillStyle = player.isAlive ? '#000' : '#f44336';
-            this.ctx.fillRect(x + 32, y + 10, 4, 4);
-
-            // Draw name label
+            // Draw name label above dino
             this.ctx.fillStyle = player.color;
             this.ctx.font = 'bold 12px Courier New';
             const nameText = `${player.name}: ${player.score}`;
             this.ctx.fillText(nameText, x, y - 5);
 
-            // Draw dead indicator
+            // Draw dino using proper pixel art
+            if (player.isJumping) {
+                this.drawOnlineDinoJumping(x, y, color);
+            } else {
+                this.drawOnlineDinoRunning(x, y, color, player.animFrame || 0);
+            }
+
+            // Draw dead eyes if not alive
             if (!player.isAlive) {
-                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-                this.ctx.fillRect(x, y, DINO_WIDTH, DINO_HEIGHT);
-                this.ctx.fillStyle = '#fff';
-                this.ctx.font = 'bold 14px Courier New';
-                this.ctx.fillText('X', x + 18, y + 28);
+                this.drawOnlineDinoDeadEyes(x, y);
             }
         }
+    }
+
+    drawOnlineDinoRunning(x, y, color, frame) {
+        const ctx = this.ctx;
+        ctx.fillStyle = color;
+
+        // Head
+        ctx.fillRect(x + 22, y, 22, 4);
+        ctx.fillRect(x + 18, y + 4, 26, 4);
+        ctx.fillRect(x + 18, y + 8, 26, 4);
+
+        // Eye
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(x + 32, y + 6, 4, 4);
+        ctx.fillStyle = color;
+
+        // Mouth area
+        ctx.fillRect(x + 18, y + 12, 26, 4);
+        ctx.fillRect(x + 30, y + 16, 14, 3);
+
+        // Neck
+        ctx.fillRect(x + 14, y + 16, 16, 4);
+
+        // Body
+        ctx.fillRect(x + 6, y + 20, 28, 4);
+        ctx.fillRect(x + 2, y + 24, 32, 4);
+        ctx.fillRect(x + 2, y + 28, 28, 4);
+        ctx.fillRect(x + 6, y + 32, 20, 4);
+
+        // Arm
+        ctx.fillRect(x + 26, y + 24, 4, 8);
+        ctx.fillRect(x + 28, y + 28, 4, 4);
+
+        // Tail
+        ctx.fillRect(x, y + 24, 4, 4);
+        ctx.fillRect(x - 4, y + 20, 6, 4);
+        ctx.fillRect(x - 8, y + 16, 6, 4);
+
+        // Legs (animated)
+        if (frame === 0) {
+            ctx.fillRect(x + 8, y + 36, 4, 8);
+            ctx.fillRect(x + 6, y + 42, 6, 5);
+            ctx.fillRect(x + 20, y + 36, 4, 6);
+            ctx.fillRect(x + 18, y + 40, 6, 4);
+        } else {
+            ctx.fillRect(x + 8, y + 36, 4, 6);
+            ctx.fillRect(x + 6, y + 40, 6, 4);
+            ctx.fillRect(x + 20, y + 36, 4, 8);
+            ctx.fillRect(x + 18, y + 42, 6, 5);
+        }
+    }
+
+    drawOnlineDinoJumping(x, y, color) {
+        const ctx = this.ctx;
+        ctx.fillStyle = color;
+
+        // Head
+        ctx.fillRect(x + 22, y, 22, 4);
+        ctx.fillRect(x + 18, y + 4, 26, 4);
+        ctx.fillRect(x + 18, y + 8, 26, 4);
+
+        // Eye
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(x + 32, y + 6, 4, 4);
+        ctx.fillStyle = color;
+
+        // Mouth
+        ctx.fillRect(x + 18, y + 12, 26, 4);
+        ctx.fillRect(x + 30, y + 16, 14, 3);
+
+        // Neck
+        ctx.fillRect(x + 14, y + 16, 16, 4);
+
+        // Body
+        ctx.fillRect(x + 6, y + 20, 28, 4);
+        ctx.fillRect(x + 2, y + 24, 32, 4);
+        ctx.fillRect(x + 2, y + 28, 28, 4);
+        ctx.fillRect(x + 6, y + 32, 20, 4);
+
+        // Arm
+        ctx.fillRect(x + 26, y + 24, 4, 8);
+        ctx.fillRect(x + 28, y + 28, 4, 4);
+
+        // Tail
+        ctx.fillRect(x, y + 24, 4, 4);
+        ctx.fillRect(x - 4, y + 20, 6, 4);
+        ctx.fillRect(x - 8, y + 16, 6, 4);
+
+        // Legs tucked
+        ctx.fillRect(x + 8, y + 36, 4, 4);
+        ctx.fillRect(x + 10, y + 38, 6, 4);
+        ctx.fillRect(x + 20, y + 36, 4, 4);
+        ctx.fillRect(x + 22, y + 38, 6, 4);
+    }
+
+    drawOnlineDinoDeadEyes(x, y) {
+        this.ctx.fillStyle = '#ff0000';
+        this.ctx.fillRect(x + 32, y + 6, 2, 2);
+        this.ctx.fillRect(x + 34, y + 8, 2, 2);
+        this.ctx.fillRect(x + 34, y + 6, 2, 2);
+        this.ctx.fillRect(x + 32, y + 8, 2, 2);
     }
 
     updateUI() {
