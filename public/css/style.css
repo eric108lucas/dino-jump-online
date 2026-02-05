@@ -614,6 +614,24 @@ body {
     margin-top: 20px;
 }
 
+.online-gameover-actions button {
+    padding: 12px 25px;
+    font-size: 16px;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    border: 3px solid #535353;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #fff;
+    color: #535353;
+    min-width: 150px;
+}
+
+.online-gameover-actions button:hover {
+    background-color: #535353;
+    color: #fff;
+}
+
 /* Ranking screen */
 #ranking-screen {
     background-color: rgba(255, 255, 255, 0.98);
